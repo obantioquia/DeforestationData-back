@@ -22,7 +22,7 @@ email <- gm_mime() |>
            "Regards", "\n",
            "Observatorio de Bosques de Antioquia.")
   ) |> 
-  gm_attach_file("styles.css") # Archivo de reporte adjunto
+  gm_attach_file("Reporte_pdf_dash.pdf") # Archivo de reporte adjunto
 
 
 gm_send_message(email)

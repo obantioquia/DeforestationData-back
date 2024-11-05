@@ -164,5 +164,13 @@ subdatos_cluster <- subset(atd_GFW_bosque, DN == 1)
 st_write(st_transform(subdatos_cluster, crs = 4326), 
          "Data/output/GFW_Alerts.shp",
          append=F)
+
+st_write(st_transform(subdatos_cluster, crs = 4326), 
+         "C:/Users/cmartinez/Desktop/GFW 2024 REPORTING SYSTEM - Project/Dashboard-webpage/Data/output/GFW_Alerts.shp",
+         append=F)
+
 st_write(st_transform(x, crs=4326), "Data/output/GFW_AlertsCluster.shp",
+         append=F)
+
+st_write(st_transform(x, crs=4326), "C:/Users/cmartinez/Desktop/GFW 2024 REPORTING SYSTEM - Project/Dashboard-webpage/Data/output/GFW_AlertsCluster.shp",
          append=F)
