@@ -1,0 +1,1 @@
+"C:/Users/cmartinez/AppData/Local/Programs/R/R-4.4.1/bin/Rscript.exe" "C:/Users/cmartinez/Desktop/DEFORESTATION REPORTING SYSTEM GFW/Project v2/Scripts/IDEAM_dataSelenium.R"

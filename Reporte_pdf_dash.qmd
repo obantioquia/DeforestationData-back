@@ -1,0 +1,220 @@
+---
+title: Reporte de alertas tempranas de deforestación en Antioquia
+lang: es
+format: 
+  dashboard:
+    scrolling: true
+    logo: Data/logo/OBA-blanco-2020.png
+    css: stylespdf.css
+    self-contained: true
+    orientation: rows
+    theme: 
+      - simplex
+---
+
+
+```{r}
+#| message: false
+library(sf)
+library(terra)
+library(dplyr)
+library(ggplot2)
+library(scales)
+library(tmap)
+```
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE, echo=FALSE}
+Municipios <- st_read("Data/input/MunicipiosAntioquia.geojson") |>
+  st_transform(crs=4326)
+
+AlertasGFW_cluster <- st_read("Data/output/GFW_Alerts.shp") |> st_transform(crs=4326)
+AlertasIDEAM <- st_read("Data/output/IDEAM_atd.shp") |> st_transform(crs=4326)
+
+## IDEAM 
+intersecciones_IDEAM <- st_intersects(Municipios, AlertasIDEAM)
+Municipios$num_alertas_IDEAM <- lengths(intersecciones_IDEAM)
+Municipios_Ideam <- Municipios |>
+  arrange(desc(num_alertas_IDEAM))
+
+top_7_municipios_IDEAM <- head(Municipios_Ideam, 10)
+min_alertas <- 0
+max_alertas <- max(Municipios_Ideam$num_alertas_IDEAM, na.rm = TRUE)
+
+```
+
+
+<i class="bi bi-exclamation-triangle-fill" id="icono-alerta"></i> <span class="textoAlerts">Alertas GFW:</span>
+<span class="valor"> `r format(dim(AlertasGFW_cluster)[1], big.mark = ".", decimal.mark = ",")` </span>
+
+<i class="bi bi-exclamation-triangle-fill" id="icono-alerta"></i> <span class="textoAlerts">Alertas IDEAM:</span>
+<span class="valor"> `r format(dim(AlertasIDEAM)[1], big.mark = ".", decimal.mark = ",")` </span>
+
+<i class="bi bi-calendar-week" id="icono-alerta"></i> <span class="textoAlerts">Periodo analizado:</span>
+<span class="valor"> `r paste0(AlertasIDEAM$FechaInit[1], " - ", AlertasIDEAM$FechaFin[1])` </span>
+
+<span class="title-style"> Reporte 1 </span>
+
+<span class="textoAlerts2">Fecha publicación:</span>
+<span class="valor2"> `r Sys.Date()` </span>
+
+
+
+
+
+
+## Row {height=70%}
+
+### Column {width=27%}
+
+```{r}
+#| title: "Municipios con más alertas GFW"
+#| fig-height: 10
+
+# Obtener los índices de intersección entre municipios y alertas
+intersecciones <- st_intersects(Municipios, AlertasGFW_cluster)
+# Contar el número de alertas por municipio utilizando la longitud de las intersecciones
+Municipios$num_alertas <- lengths(intersecciones)
+Municipios <- Municipios |>
+  arrange(desc(num_alertas))
+
+top_7_municipios <- head(Municipios, 10)
+min_alertas <- 0
+max_alertas <- max(Municipios$num_alertas, na.rm = TRUE)
+
+color_scale <- scale_fill_gradient(
+  low = "#AEB6E5FF",
+  high = "#A93154FF",
+  limits = c(min_alertas, max_alertas),
+  name = "Número de Alertas",
+  oob = scales::squish
+)
+
+
+ggplot(top_7_municipios, aes(x = reorder(MPIO_CNMBR, num_alertas), y = num_alertas, fill = num_alertas)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = comma(num_alertas)), 
+            hjust = -0.2,
+            size = 9, color="#616161") +
+  expand_limits(y = max(top_7_municipios$num_alertas) * 1.2) +
+  color_scale +  # Usar la misma escala de color
+  coord_flip() +  # Para mostrar las barras horizontalmente
+  labs(
+    x = "",
+    y = "Número de Alertas"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 0, hjust = 1, size = 24),
+    axis.text.y = element_text(size = 24),
+    axis.title.x = element_text(margin = margin(t = 10), size = 24),
+    axis.title.y = element_text(margin = margin(r = 10), size = 24),
+    plot.title = element_text(size = 22, face = "bold"),
+    legend.position = "none"
+  )
+
+
+```
+
+
+
+### Column {width=27%}
+
+```{r}
+#| title: "Municipios con más alertas IDEAM"
+#| fig-height: 10
+
+color_scale <- scale_fill_gradient(
+  low = "#f9da00",
+  high = "#f9da00",
+  limits = c(min_alertas, max_alertas),
+  name = "Número de Alertas",
+  oob = scales::squish
+)
+
+ggplot(top_7_municipios_IDEAM, 
+                         aes(x = reorder(MPIO_CNMBR, num_alertas_IDEAM),
+                             y = num_alertas_IDEAM, 
+                             fill = num_alertas_IDEAM)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = comma(num_alertas_IDEAM)), 
+            hjust = -0.2,  
+            size = 9,
+            color="#616161") +
+  expand_limits(y = max(top_7_municipios_IDEAM$num_alertas) * 1.2) +
+  color_scale +  # Usar la misma escala de color
+  coord_flip() +  # Para mostrar las barras horizontalmente
+  labs(
+    x = "",
+    y = "Número de Alertas"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 0, hjust = 1, size = 24),
+    axis.text.y = element_text(size = 24),
+    axis.title.x = element_text(margin = margin(t = 10), size = 24),
+    axis.title.y = element_text(margin = margin(r = 10), size = 24),
+    plot.title = element_text(size = 22, face = "bold"),
+    legend.position = "none"
+  )
+```
+
+
+
+### Column {width=46%}
+
+
+```{r}
+#| title: "Distribución espacial de alertas"
+#| padding: 0px
+#| fig-height: 6.5
+
+names(Municipios)[14] <- "Alertas IDEAM"
+
+tm_shape(Municipios) +
+  tm_fill(fill = "num_alertas", 
+          col="#919191", 
+          fill.legend = tm_legend(title = "Alertas GFW",
+                                  title.size = 1.2,
+                                  title.fontface = 2,
+                                  text.size = 1.1),
+          fill.scale = tm_scale(values = c("#AEB6E5FF", "#A93154FF"))) +
+  tm_bubbles(fill = "#f9da00", 
+             col = "white", 
+             size = "Alertas IDEAM",
+             size.legend = tm_legend(title = "Alertas IDEAM",
+                                  title.size = 1.2,
+                                  title.fontface = 2,
+                                  text.size = 1.1)) 
+
+```
+
+
+
+
+## Row {height=30%}
+
+### Column {width=54%}
+```{r}
+periodo_fecha <- paste(unique(AlertasIDEAM$FechaInit), "-", unique(AlertasIDEAM$FechaFin))
+
+alertasGFW_q <- format(dim(AlertasGFW_cluster)[1], big.mark = ".", decimal.mark = ",")
+municipiosGFW_q <- length(which(Municipios$num_alertas != 0))
+
+alertasIDEAM_q <- format(dim(AlertasIDEAM)[1], big.mark = ".", decimal.mark = ",")
+municipiosIDEAM_q <- length(which(Municipios_Ideam$num_alertas_IDEAM != 0))
+```
+
+
+Este reporte revela información de alertas tempranas de deforestación en el departamento de Antioquia, proveniente de dos sistemas, Global Forest Watch (GFW) y el Instituto de Hidrología, Meteorología, y Estudios Ambientales (IDEAM). Las alertas provenientes de ambos sistemas para un mismo periodo de tiempo, corresponden a las últimas dos semanas en las cuales el IDEAM ha publicado las Alertas Tempranas de Deforestación (AT-D). En el periodo de tiempo analizado, **`r periodo_fecha`** se encontró un total de **`r alertasGFW_q` alertas GFW** distribuidas en **`r municipiosGFW_q` municipios**, y **`r alertasIDEAM_q` alertas IDEAM** distribuidas en **`r municipiosIDEAM_q` municipios**.
+
+
+### Column {width=46%}
+
+Si deseas consultar información más detallada sobre las alertas tempranas de deforestación en el departamento de Antioquia, te invitamos a consultar la versión web en el siguiente link: <https://obantioquia.quarto.pub/deforestacion-dashboard/>. Además, en esa versión podrás interactuar con nuestro geovisor para conocer la localización espacial de cada AT-D proveniente de ambos sistemas, activar y desactivar capas espaciales de municipios y veredas, y cargar la imagen satelital Planet más reciente. 
+
+
+
+
+
+
