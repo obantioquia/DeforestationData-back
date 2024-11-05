@@ -11,9 +11,56 @@ load_or_install("dbscan")
 load_or_install("dplyr")
 
 
-# Obtención de API Key (vigencia de 1 año), necesario solicitar una permanente: 
-API_Key <- "fc5039f4-6e23-440a-a099-93fea49dd6b4"
-#load("C:/Users/cmartinez/Desktop/DEFORESTATION REPORTING SYSTEM GFW/Project v2/API_Key.RData")
+# ______________________________________________________________________________
+
+# Obtención de API Key 
+
+token_GFW <- read.csv("token_autorization_GFW.csv")$token_GFW
+API_Key <- read.csv("API_Key.csv")$API_Key
+
+# Construye la URL para obtener los detalles de la clave API
+url <- paste0("https://data-api.globalforestwatch.org/auth/apikey/", API_Key)
+
+# Realiza la solicitud GET para obtener los detalles de la clave API
+response <- request(url) %>%
+  req_headers(Authorization = paste("Bearer", token_GFW)) %>%
+  req_perform()
+
+api_details <- resp_body_json(response)
+Date_expira <- as.Date(api_details$data$expires_on)
+
+if(Date_expira - Sys.Date() < 20){
+  # URL del endpoint para crear una API key
+  url <- "https://data-api.globalforestwatch.org/auth/apikey"
+  
+  # Cuerpo de la solicitud en formato JSON
+  body_data <- list(
+    alias = paste0("api-key-for-consulting-alerts1","_",Sys.Date()),
+    email = "oba@jbotanico.org",
+    organization = "Fundación Jardín Botánico Joaquín Antonio Uribe de Medellín",
+    domains = list()  # Deja vacío si no especificas dominios
+  )
+  
+  # Realizar la solicitud POST para crear la API key
+  response <- request(url) %>%
+    req_headers(
+      Authorization = paste("Bearer", token_GFW),
+      "Content-Type" = "application/json"
+    ) %>%
+    req_body_json(body_data) %>%
+    req_perform()
+  
+  # API-KEY
+  API_Key <- resp_body_json(response)$data$api_key
+  write.csv(data.frame(API_Key), "API_Key.csv")
+  
+}else{
+  API_Key <- read.csv("API_Key.csv")$API_Key
+}
+
+
+# ______________________________________________________________________________
+
 
 # Obtención de última capa (versión) del sistema de alertas de deforestación integradas
 url <- "https://data-api.globalforestwatch.org/dataset/gfw_integrated_alerts/latest/query"

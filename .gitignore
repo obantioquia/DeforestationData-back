@@ -3,3 +3,5 @@
 .RData
 .Ruserdata
 /Data/
+API_Key.csv
+token_autorization_GFW.csv
