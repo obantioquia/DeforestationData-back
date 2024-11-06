@@ -1,5 +1,9 @@
 # Script para extraer datos de alertas de GFW.
 
+# Se cargan los paquetes necesarios: 
+# sf para manipulación de datos espaciales, httr2 para consultas y solicitudes a
+# API, dbscan para generar clústers de puntos, y dplyr para manipulación de 
+# bases de datos.
 load_or_install <- function(package) {
   if (!require(package, character.only = TRUE)) {
     install.packages(package)
