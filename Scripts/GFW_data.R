@@ -1,3 +1,5 @@
+# Script para extraer datos de alertas de GFW.
+
 load_or_install <- function(package) {
   if (!require(package, character.only = TRUE)) {
     install.packages(package)
