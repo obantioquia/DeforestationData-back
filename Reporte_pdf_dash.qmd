@@ -170,7 +170,6 @@ ggplot(top_7_municipios_IDEAM,
 #| fig-height: 6.5
 
 names(Municipios)[14] <- "Alertas IDEAM"
-
 tm_shape(Municipios) +
   tm_fill(fill = "num_alertas", 
           col="#919191", 

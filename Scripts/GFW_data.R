@@ -74,6 +74,7 @@ url <- "https://data-api.globalforestwatch.org/dataset/gfw_integrated_alerts/lat
 # Lectura del departamento de Antioquia para realizar filtro espacial
 Antioquia.geojson <- st_read("Data/input/Antioquia.geojson") |>
   st_transform(crs=4326)
+
 db_coords <- st_coordinates(Antioquia.geojson)[,c(1,2)]
 list_coords <- unname(split(db_coords, seq(nrow(db_coords))))
 
@@ -97,14 +98,34 @@ body <- list(
 
 
 # Realizar la solicitud POST
-response <- request(url) %>%
-  req_headers(
-    "x-api-key" = API_Key,  # Reemplazar con tu clave de la API
-    "Content-Type" = "application/json"
-  ) %>%
-  req_body_json(body) %>%
-  req_timeout(300) %>%
-  req_perform() 
+# Número máximo de intentos
+max_intentos <- 8
+intento <- 1
+exito <- FALSE
+
+# Bucle que intentará ejecutar el código hasta que sea exitoso o se alcance el límite de intentos
+while (intento <= max_intentos && !exito) {
+  tryCatch({
+    # Código para realizar la solicitud
+    response <- request(url) %>%
+      req_headers(
+        "x-api-key" = API_Key,  # Reemplazar con tu clave de la API
+        "Content-Type" = "application/json"
+      ) %>%
+      req_body_json(body) %>%
+      req_timeout(300) %>%
+      req_perform()
+    
+    # Si llega aquí sin errores, se considera un éxito
+    exito <- TRUE
+    print("Solicitud exitosa")
+    
+  }, error = function(e) {
+    # Mensaje de error y aumento del contador de intentos
+    print(paste("Error en el intento", intento, ":", e$message))
+    intento <- intento + 1
+  })
+}
 
 
 # Imprimir la respuesta
@@ -171,13 +192,13 @@ st_write(st_transform(subdatos_cluster, crs = 4326),
          append=F)
 
 st_write(st_transform(subdatos_cluster, crs = 4326), 
-         "C:/Users/cmartinez/Desktop/GFW 2024 REPORTING SYSTEM - Project/Dashboard-webpage/Data/output/GFW_Alerts_Recent.shp",
+         "/Users/investigadora/Desktop/OBA_REPORTES_GFW/Dashboard-webpage/Data/output/GFW_Alerts_Recent.shp",
          append=F)
 
 st_write(st_transform(x, crs=4326), "Data/output/GFW_AlertsCluster_Recent.shp",
          append=F)
 
-st_write(st_transform(x, crs=4326), "C:/Users/cmartinez/Desktop/GFW 2024 REPORTING SYSTEM - Project/Dashboard-webpage/Data/output/GFW_AlertsCluster_Recent.shp",
+st_write(st_transform(x, crs=4326), "/Users/investigadora/Desktop/OBA_REPORTES_GFW/Dashboard-webpage/Data/output/GFW_AlertsCluster_Recent.shp",
          append=F)
 
 

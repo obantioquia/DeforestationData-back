@@ -69,61 +69,91 @@ url <- "https://data-api.globalforestwatch.org/dataset/gfw_integrated_alerts/lat
 # Lectura del departamento de Antioquia para realizar filtro espacial
 Antioquia.geojson <- st_read("Data/input/Antioquia.geojson") |>
   st_transform(crs=4326)
-db_coords <- st_coordinates(Antioquia.geojson)[,c(1,2)]
-list_coords <- unname(split(db_coords, seq(nrow(db_coords))))
+
 
 ## Consulta por nivel de confianza alto y muy alto de las últimas dos semanas
 Fecha_hoy <- unique(atd_IDEAM$FechaFin) # Fecha actual
 Fecha_previa <- unique(atd_IDEAM$FechaInit) # Fecha de hace dos semanas
 
-consultaSQL <- paste0("SELECT longitude, latitude, gfw_integrated_alerts__date, gfw_integrated_alerts__confidence FROM results WHERE gfw_integrated_alerts__date > '", Fecha_previa, "' AND gfw_integrated_alerts__date < '", Fecha_hoy, "' AND (gfw_integrated_alerts__confidence = 'high' OR gfw_integrated_alerts__confidence = 'highest')")
+subregiones <- st_read("Data/input/SubregionesAntioquia.geojson") |>
+  st_transform(crs=4326)
 
-# Consulta alertas GFW para todos los nivels de confianza
-#consultaSQL <- paste0("SELECT longitude, latitude, gfw_integrated_alerts__date, gfw_integrated_alerts__confidence FROM results WHERE gfw_integrated_alerts__date > '", Fecha_previa, "' AND gfw_integrated_alerts__date < '", Fecha_hoy, "' AND (gfw_integrated_alerts__confidence = 'high' OR gfw_integrated_alerts__confidence = 'highest' OR gfw_integrated_alerts__confidence = 'nominal')")
-
-
-body <- list(
-  geometry = list(
-    type = "Polygon",
-    coordinates = list(list_coords)
-  ),
-  sql = consultaSQL
-)
-
-
-# Realizar la solicitud POST
-response <- request(url) %>%
-  req_headers(
-    "x-api-key" = API_Key,  # Reemplazar con tu clave de la API
-    "Content-Type" = "application/json"
-  ) %>%
-  req_body_json(body) %>%
-  req_timeout(600) %>%
-  req_perform() 
-
-
-# Imprimir la respuesta
-x <- resp_body_json(response)$data 
-
-# Convertir la lista de listas a una lista de listas con nombres de columnas
-# Extraer los elementos de cada lista interna
-df_list <- lapply(x, function(item) {
-  data.frame(
-    latitude = item$latitude,
-    longitude = item$longitude,
-    date = item$gfw_integrated_alerts__date,
-    confidence = item$gfw_integrated_alerts__confidence,
-    stringsAsFactors = FALSE
+datos_complete <- NULL
+for(i in 1:9){
+  Antioquia.geojson <- subregiones[i,]
+  db_coords <- st_coordinates(Antioquia.geojson)[,c(1,2)]
+  list_coords <- unname(split(db_coords, seq(nrow(db_coords))))
+  consultaSQL <- paste0("SELECT longitude, latitude, gfw_integrated_alerts__date, gfw_integrated_alerts__confidence FROM results WHERE gfw_integrated_alerts__date > '", Fecha_previa, "' AND gfw_integrated_alerts__date < '", Fecha_hoy, "' AND (gfw_integrated_alerts__confidence = 'high' OR gfw_integrated_alerts__confidence = 'highest')")
+  
+  body <- list(
+    geometry = list(
+      type = "Polygon",
+      coordinates = list(list_coords)
+    ),
+    sql = consultaSQL
   )
-})
+  
+  
+  # Realizar la solicitud POST
+  # Número máximo de intentos
+  max_intentos <- 8
+  intento <- 1
+  exito <- FALSE
+  
+  # Bucle que intentará ejecutar el código hasta que sea exitoso o se alcance el límite de intentos
+  while (intento <= max_intentos && !exito) {
+    tryCatch({
+      # Código para realizar la solicitud
+      response <- request(url) %>%
+        req_headers(
+          "x-api-key" = API_Key,  # Reemplazar con tu clave de la API
+          "Content-Type" = "application/json"
+        ) %>%
+        req_body_json(body) %>%
+        req_timeout(300) %>%
+        req_perform()
+      
+      # Si llega aquí sin errores, se considera un éxito
+      exito <- TRUE
+      print("Solicitud exitosa")
+      
+    }, error = function(e) {
+      # Mensaje de error y aumento del contador de intentos
+      print(paste("Error en el intento", intento, ":", e$message))
+      intento <- intento + 1
+    })
+  }
+  
+  # Imprimir la respuesta
+  x <- resp_body_json(response)$data 
+  
+  # Convertir la lista de listas a una lista de listas con nombres de columnas
+  # Extraer los elementos de cada lista interna
+  df_list <- lapply(x, function(item) {
+    data.frame(
+      latitude = item$latitude,
+      longitude = item$longitude,
+      date = item$gfw_integrated_alerts__date,
+      confidence = item$gfw_integrated_alerts__confidence,
+      stringsAsFactors = FALSE
+    )
+  })
+  
+  # Unir todas las listas en un solo data frame
+  df <- do.call(rbind, df_list)
+  
+  df$Fecha_inicio <- Fecha_previa
+  df$Fecha_fin <- Fecha_hoy
+  
+  datos_complete <- rbind(datos_complete, df)
+  print(paste("Subregión", i, "consultada con éxito"))
+  
+}
 
-# Unir todas las listas en un solo data frame
-df <- do.call(rbind, df_list)
-
-df$Fecha_inicio <- Fecha_previa
-df$Fecha_fin <- Fecha_hoy
 
 # Ver el data frame
+df <- datos_complete
+
 head(df)
 unique(df$confidence)
 
@@ -166,11 +196,11 @@ st_write(st_transform(subdatos_cluster, crs = 4326),
          append=F)
 
 st_write(st_transform(subdatos_cluster, crs = 4326), 
-         "C:/Users/cmartinez/Desktop/GFW 2024 REPORTING SYSTEM - Project/Dashboard-webpage/Data/output/GFW_Alerts.shp",
+         "/Users/investigadora/Desktop/OBA_REPORTES_GFW/Dashboard-webpage/Data/output/GFW_Alerts.shp",
          append=F)
 
 st_write(st_transform(x, crs=4326), "Data/output/GFW_AlertsCluster.shp",
          append=F)
 
-st_write(st_transform(x, crs=4326), "C:/Users/cmartinez/Desktop/GFW 2024 REPORTING SYSTEM - Project/Dashboard-webpage/Data/output/GFW_AlertsCluster.shp",
+st_write(st_transform(x, crs=4326), "/Users/investigadora/Desktop/OBA_REPORTES_GFW/Dashboard-webpage/Data/output/GFW_AlertsCluster.shp",
          append=F)

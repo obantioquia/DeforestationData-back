@@ -8,7 +8,7 @@ load_or_install <- function(package) {
 load_or_install("sf")
 
 
-setwd("C:/Users/cmartinez/OneDrive - JBMED/Alertas_IDEAM_Selenium")
+setwd("/Users/investigadora/Library/CloudStorage/OneDrive-JBMED/Alertas_IDEAM_Selenium")
 
 carpetas <- list.files(full.names = TRUE)
 info_archivos <- file.info(carpetas)
@@ -56,7 +56,7 @@ atd <-  rbind(atd_1[, dim(atd_1)[2]],
 
 
 ## Extracción de alertas IDEAM solo para el departamento de Antioquia
-setwd("C:/Users/cmartinez/Desktop/DEFORESTATION REPORTING SYSTEM GFW/Project v2")
+setwd("/Users/investigadora/Desktop/OBA_REPORTES_GFW/DeforestationData-back")
 Antioquia.geojson <- st_read("Data/input/Antioquia.geojson") |>
   st_transform(crs=4326)
 
@@ -88,3 +88,24 @@ st_write(atd_ant,
          append=F)
 
 
+
+## Guardar datos filtrados a carpeta output de dashboard-website
+setwd("/Users/investigadora/Desktop/OBA_REPORTES_GFW/Dashboard-webpage")
+
+st_write(PC_incendios_ant, 
+         "Data/output/IDEAM_PC_incendios.shp",
+         append=F)
+
+st_write(PC_ant, 
+         "Data/output/IDEAM_PC.shp",
+         append=F)
+
+st_write(atd_poligonos_ant, 
+         "Data/output/IDEAM_atd_poligonos.shp",
+         append=F)
+
+st_write(atd_ant, 
+         "Data/output/IDEAM_atd.shp",
+         append=F)
+
+setwd("/Users/investigadora/Desktop/OBA_REPORTES_GFW/DeforestationData-back")

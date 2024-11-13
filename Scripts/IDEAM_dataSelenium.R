@@ -16,7 +16,7 @@ while (!success) {
   tryCatch({
     # Ejecuta el código de rsDriver
     remote_driver_object <- rsDriver(browser = 'chrome',
-                                     chromever = '128.0.6613.119',
+                                     chromever = '130.0.6723.116',
                                      verbose = T,
                                      port = free_port())
     
@@ -73,7 +73,7 @@ while(Estado != TRUE){
   Sys.sleep(5)
 }
 password <- remDr$findElement(using = 'xpath', '//input[@type="password"]')
-password$sendKeysToElement(list("ObservatorioGFW.2023"))
+password$sendKeysToElement(list(read.csv("clave_OBAjbotanico.csv")$x))
 Login <- remDr$findElement(using = 'xpath', '//input[@type="submit"]')
 Login$clickElement()
 
@@ -104,6 +104,18 @@ while(Estado != TRUE){
   Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
   Sys.sleep(5)
 }
+
+# Ordenar por nombre 
+
+Sys.sleep(15)
+nombre <- remDr$findElement(using = 'xpath', '//span[text()="Nombre"]')
+nombre$clickElement()
+Sys.sleep(10)
+Z_a_la_A <- remDr$findElement(using = 'xpath', '//button[.//span[text()="De la Z a la A"]]')
+Z_a_la_A$clickElement()
+
+Sys.sleep(12)
+
 ElementosAlertas <- remDr$findElements(using = 'xpath', "//button[@data-automationid='FieldRenderer-name']")
 
 data_file_names <- lapply(ElementosAlertas, function(x) {
@@ -179,6 +191,7 @@ while(Estado != TRUE){
 
 for(i in 1:length(Elementos_lista)){
   remDr$findElement(using = 'xpath', paste0("//div[@title = '",Elementos_lista[i],"']"))$clickElement()
+  Sys.sleep(3)
 }
 
 Estado <- FALSE
@@ -226,6 +239,7 @@ while(Estado != TRUE){
 
 for(i in 1:length(Elementos_lista)){
   remDr$findElement(using = 'xpath', paste0("//div[@title = '",Elementos_lista[i],"']"))$clickElement()
+  Sys.sleep(3)
 }
 
 Estado <- FALSE
@@ -288,6 +302,7 @@ while(Estado != TRUE){
 
 for(i in 1:length(atd_shape)){
   remDr$findElement(using = 'xpath', paste0("//div[@title = '",atd_shape[i],"']"))$clickElement()
+  Sys.sleep(3)
 }
 
 Estado <- FALSE
@@ -327,6 +342,7 @@ while(Estado != TRUE){
 
 for(i in 1:length(Elementos_lista)){
   remDr$findElement(using = 'xpath', paste0("//div[@title = '",Elementos_lista[i],"']"))$clickElement()
+  Sys.sleep(3)
 }
 
 Estado <- FALSE
@@ -373,6 +389,7 @@ while(Estado != TRUE){
 
 for(i in 1:length(Elementos_lista)){
   remDr$findElement(using = 'xpath', paste0("//div[@title = '",Elementos_lista[i],"']"))$clickElement()
+  Sys.sleep(3)
 }
 
 Estado <- FALSE
@@ -400,7 +417,7 @@ while(Estado != TRUE){
 remDr$goBack()
 
 remDr$close()
-system('taskkill /im java.exe /f')
+#system('taskkill /im java.exe /f')
 
 
 #_______________________________________________________________________________
@@ -408,7 +425,7 @@ system('taskkill /im java.exe /f')
 Sys.sleep(5)
 
 # Obtén los archivos y carpetas en el directorio
-archivos <- list.files("C:/Users/cmartinez/Downloads", full.names = TRUE)
+archivos <- list.files("/Users/investigadora/Downloads", full.names = TRUE)
 
 # Obtén la información de los archivos
 info_archivos <- file.info(archivos)
@@ -421,7 +438,7 @@ print(archivos_ordenados)
 
 
 # Carpeta de destino donde quieres mover los archivos
-destino <- "C:/Users/cmartinez/OneDrive - JBMED/Alertas_IDEAM_Selenium"
+destino <- "/Users/investigadora/OneDrive - JBMED/Alertas_IDEAM_Selenium"
 
 # Selecciona los archivos de interés (por ejemplo, los 3 más recientes)
 archivos_a_mover <- archivos_ordenados[1:6]
@@ -438,7 +455,7 @@ sapply(archivos_a_mover, function(archivo) {
   file.rename(archivo, destino_completo)
 })
 
-setwd("C:/Users/cmartinez/OneDrive - JBMED/Alertas_IDEAM_Selenium")
+setwd("/Users/investigadora/OneDrive - JBMED/Alertas_IDEAM_Selenium")
 directorio <- paste0(Reciente1,"____",Reciente2)
 dir.create(paste0(directorio))
 
