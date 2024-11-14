@@ -8,7 +8,7 @@ load_or_install <- function(package) {
 load_or_install("sf")
 
 
-setwd("/Users/investigadora/Library/CloudStorage/OneDrive-JBMED/Alertas_IDEAM_Selenium")
+setwd("/Users/investigadora/Desktop/OBA_REPORTES_GFW/Alertas_IDEAM_Selenium")
 
 carpetas <- list.files(full.names = TRUE)
 info_archivos <- file.info(carpetas)
