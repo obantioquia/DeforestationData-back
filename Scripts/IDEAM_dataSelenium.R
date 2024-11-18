@@ -33,6 +33,7 @@ while (!success) {
 
 # Create a client object
 remDr <- remote_driver_object$client
+
 #remDr$open()
 remDr$maxWindowSize()
 
@@ -98,7 +99,7 @@ No$clickElement()
 
 
 # 1. Listar todos los elementos
-#remDr$setTimeout(type = "implicit", milliseconds = 10000)
+remDr$setTimeout(type = "script", milliseconds = 30000)
 Estado <- FALSE
 while(Estado != TRUE){
   Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
@@ -107,12 +108,12 @@ while(Estado != TRUE){
 
 # Ordenar por nombre
 
-Sys.sleep(15)
-nombre <- remDr$findElement(using = 'xpath', '//span[text()="Nombre"]')
-nombre$clickElement()
-Sys.sleep(10)
-Z_a_la_A <- remDr$findElement(using = 'xpath', '//button[.//span[text()="De la Z a la A"]]')
-Z_a_la_A$clickElement()
+# Sys.sleep(15)
+# nombre <- remDr$findElement(using = 'xpath', '//span[text()="Nombre"]')
+# nombre$clickElement()
+# Sys.sleep(10)
+# Z_a_la_A <- remDr$findElement(using = 'xpath', '//button[.//span[text()="De la Z a la A"]]')
+# Z_a_la_A$clickElement()
 
 Sys.sleep(12)
 
@@ -122,6 +123,7 @@ data_file_names <- lapply(ElementosAlertas, function(x) {
   x$getElementText() |> unlist()
 }) |> flatten_chr()
 
+data_file_names <- sort(data_file_names, decreasing=TRUE)
 
 # 2. Ubicar los dos primeros
 Reciente1 <- data_file_names[1]
@@ -261,7 +263,7 @@ remDr$goBack()
 Estado <- FALSE
 while(Estado != TRUE){
   Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
-  Sys.sleep(2)
+  Sys.sleep(5)
 }
 
 remDr$goBack()
@@ -270,6 +272,7 @@ remDr$goBack()
 
 
 ## 3.2. Descargar la segunda mas reciente
+
 Estado <- FALSE
 while(Estado != TRUE){
   Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
@@ -278,6 +281,8 @@ while(Estado != TRUE){
 
 Last1 <- remDr$findElement(using = 'xpath', paste0("//button[@title='", Reciente2, "']"))
 Last1$clickElement()
+
+remDr$setTimeout(type = "script", milliseconds = 30000) # Aumentar a 30 segundos
 
 Estado <- FALSE
 while(Estado != TRUE){
@@ -302,7 +307,7 @@ while(Estado != TRUE){
 
 for(i in 1:length(atd_shape)){
   remDr$findElement(using = 'xpath', paste0("//div[@title = '",atd_shape[i],"']"))$clickElement()
-  Sys.sleep(3)
+  Sys.sleep(5)
 }
 
 Estado <- FALSE
@@ -342,7 +347,7 @@ while(Estado != TRUE){
 
 for(i in 1:length(Elementos_lista)){
   remDr$findElement(using = 'xpath', paste0("//div[@title = '",Elementos_lista[i],"']"))$clickElement()
-  Sys.sleep(3)
+  Sys.sleep(5)
 }
 
 Estado <- FALSE
@@ -389,7 +394,7 @@ while(Estado != TRUE){
 
 for(i in 1:length(Elementos_lista)){
   remDr$findElement(using = 'xpath', paste0("//div[@title = '",Elementos_lista[i],"']"))$clickElement()
-  Sys.sleep(3)
+  Sys.sleep(5)
 }
 
 Estado <- FALSE
@@ -411,7 +416,7 @@ remDr$goBack()
 Estado <- FALSE
 while(Estado != TRUE){
   Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
-  Sys.sleep(2)
+  Sys.sleep(5)
 }
 
 remDr$goBack()
