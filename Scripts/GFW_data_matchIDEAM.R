@@ -204,3 +204,24 @@ st_write(st_transform(x, crs=4326), "Data/output/GFW_AlertsCluster.shp",
 
 st_write(st_transform(x, crs=4326), "/Users/investigadora/Desktop/OBA_REPORTES_GFW/Dashboard-webpage/Data/output/GFW_AlertsCluster.shp",
          append=F)
+
+
+
+data_histG <- read.csv("/Users/investigadora/Desktop/OBA_REPORTES_GFW/Dashboard-webpage/Data/data_historico.csv")
+
+if(dim(data_histG)[2] > 3){
+  data_histG <- data_histG[, (dim(data_histG)[2] - 2): dim(data_histG)[2]]
+}else{
+  data_histG <- data_histG
+}
+
+data_historico <- data.frame(FechaPublicacion = as.character(Sys.Date()), 
+                             AlertasIDEAM = dim(atd_IDEAM)[1],
+                             AlertasGFW = dim(subdatos_cluster)[1])
+
+data_hist_export <- rbind(data_histG,
+                          data_historico)
+
+write.csv(data_hist_export, "/Users/investigadora/Desktop/OBA_REPORTES_GFW/Dashboard-webpage/Data/data_historico.csv")
+
+# write.csv(data_historico, "/Users/investigadora/Desktop/OBA_REPORTES_GFW/Dashboard-webpage/Data/data_historico.csv")
