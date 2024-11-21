@@ -1,3 +1,5 @@
+# Cargar todas las librerias necesarias para consulta de datos GFW
+
 load_or_install <- function(package) {
   if (!require(package, character.only = TRUE)) {
     install.packages(package)
@@ -10,13 +12,12 @@ load_or_install("httr2")
 load_or_install("dbscan")
 load_or_install("dplyr")
 
-
-atd_IDEAM <- st_read("Data/output/IDEAM_atd.shp")
-
+# Lectura de alertas IDEAM para conocer las fechas de las últimas dos semanas en las que
+# este sistema ha publicado dicha información.
+atd_IDEAM <- st_read("Data/output/IDEAM_atd.shp") 
 
 # ______________________________________________________________________________
 # Obtención de API Key 
-
 token_GFW <- read.csv("token_autorization_GFW.csv")$token_GFW
 API_Key <- read.csv("API_Key.csv")$API_Key
 

@@ -2,6 +2,7 @@
 
 library(gmailr)
 
+# Autenticación automática con correo OBA de gmail
 gm_auth_configure(path="key_gmail_OBA.json")
 gm_auth(email = TRUE)
 
@@ -11,12 +12,13 @@ send <- "obantioquia@gmail.com"
 to <- c("camilomartinezcmf@gmail.com")
 #to <- c("caemartinezfo@unal.edu.co")
 
+# Composición del correo, asunto, redacción y archivos adjuntos. 
 email <- gm_mime() |>
   gm_to(to) |>
   gm_from(send) |>
-  gm_subject(paste("Email from R")) |>
+  gm_subject(paste("Email from R")) |> # Asunto del correo
   gm_text_body(
-    paste0("Dear all", "\n",
+    paste0("Dear all", "\n",  # Cuerpo del correo
            "Hello!", "\n",
            "Hi!", "\n",
            "your text here","\n",
@@ -26,6 +28,9 @@ email <- gm_mime() |>
   gm_attach_file("Reporte_pdf_dash.pdf") # Archivo de reporte adjunto
 
 
+
+# A veces se generan errores por fallas en conexión a la API de gmail, el ciclo
+# while asegura que se repita múltiples veces hasta que el envío sea efectivo.
 
 max_intentos <- 8
 intento <- 1

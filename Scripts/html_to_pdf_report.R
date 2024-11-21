@@ -1,3 +1,5 @@
+# Script que convierte archivo de reporte básico html al formato pdf
+
 pagedown::chrome_print("Reporte_pdf_dash.html", 
                        format="pdf", 
                        options = list(landscape = TRUE,
@@ -11,5 +13,4 @@ pagedown::chrome_print("Reporte_pdf_dash.html",
                                       #preferCSSPageSize = TRUE,
                                       pageRanges = "1-1"
                        ))
-
 

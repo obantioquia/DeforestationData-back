@@ -1,3 +1,5 @@
+# Pocesamiento de los datos IDEAM descargados
+
 load_or_install <- function(package) {
   if (!require(package, character.only = TRUE)) {
     install.packages(package)
@@ -7,9 +9,11 @@ load_or_install <- function(package) {
 
 load_or_install("sf")
 
-
+# Esta carpeta no está en Github, sino que en el pc local donde se ejecuta el
+# proyecto
 setwd("/Users/investigadora/Desktop/OBA_REPORTES_GFW/Alertas_IDEAM_Selenium")
 
+# Listar archivos y ordenar con fecha mas reciente 
 carpetas <- list.files(full.names = TRUE)
 info_archivos <- file.info(carpetas)
 archivos_ordenados <- carpetas[order(info_archivos$atime, decreasing = TRUE)]
@@ -17,6 +21,7 @@ archivos_ordenados <- carpetas[order(info_archivos$atime, decreasing = TRUE)]
 lastFile <- archivos_ordenados[1]
 sistemaAlertas <- dir(lastFile)
 
+# Buscar todos los archivos que tengan formato shp
 archivos_shp <- sistemaAlertas[grepl("\\.shp$", sistemaAlertas)]
 
 PC_incendios <- archivos_shp[grepl("incendios", archivos_shp)]
