@@ -8,7 +8,7 @@ pagedown::chrome_print("Reporte_pdf_dash.html",
                                       marginBottom = 0,
                                       marginLeft = 0,
                                       marginRight = 0.1,
-                                      paperWidth = 9.5, #inches
+                                      paperWidth = 10, #inches
                                       paperHeight = 13, #inches
                                       #preferCSSPageSize = TRUE,
                                       pageRanges = "1-1"

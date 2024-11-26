@@ -210,7 +210,7 @@ Este reporte revela información de alertas tempranas de deforestación en el de
 
 ### Column {width=46%}
 
-Si deseas consultar información más detallada sobre las alertas tempranas de deforestación en el departamento de Antioquia, te invitamos a consultar la versión web en el siguiente link: <https://obantioquia.quarto.pub/deforestacion-dashboard/>. Además, en esa versión podrás interactuar con nuestro geovisor para conocer la localización espacial de cada AT-D proveniente de ambos sistemas, activar y desactivar capas espaciales de municipios y veredas, y cargar la imagen satelital Planet más reciente. 
+Si deseas consultar información más detallada sobre las alertas tempranas de deforestación en el departamento de Antioquia, te invitamos a consultar la versión web en el siguiente link: <https://observatoriobosquesantioquia.org/integracion-alertas/>. Además, en esa versión podrás interactuar con nuestro geovisor para conocer la localización espacial de cada AT-D proveniente de ambos sistemas, activar y desactivar capas espaciales de municipios y veredas, y cargar la imagen satelital Planet más reciente. 
 
 
 

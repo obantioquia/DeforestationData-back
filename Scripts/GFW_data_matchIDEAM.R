@@ -208,7 +208,7 @@ st_write(st_transform(x, crs=4326), "/Users/investigadora/Desktop/OBA_REPORTES_G
 
 
 
-data_histG <- read.csv("/Users/investigadora/Desktop/OBA_REPORTES_GFW/Dashboard-webpage/Data/data_historico.csv")
+data_histG <- read.csv2("/Users/investigadora/Desktop/OBA_REPORTES_GFW/Dashboard-webpage/data_historicov2.csv")
 
 if(dim(data_histG)[2] > 3){
   data_histG <- data_histG[, (dim(data_histG)[2] - 2): dim(data_histG)[2]]
@@ -216,13 +216,19 @@ if(dim(data_histG)[2] > 3){
   data_histG <- data_histG
 }
 
-data_historico <- data.frame(FechaPublicacion = as.character(Sys.Date()), 
-                             AlertasIDEAM = dim(atd_IDEAM)[1],
-                             AlertasGFW = dim(subdatos_cluster)[1])
+if(last(data_histG)$FechaPublicacion == Fecha_hoy){
+  data_hist_export <- data_histG
+}else{
+  data_historico <- data.frame(FechaPublicacion = as.character(Fecha_hoy), 
+                               AlertasIDEAM = dim(atd_IDEAM)[1],
+                               AlertasGFW = dim(subdatos_cluster)[1])
+  
+  data_hist_export <- rbind(data_histG,
+                            data_historico)
+}
 
-data_hist_export <- rbind(data_histG,
-                          data_historico)
 
 write.csv(data_hist_export, "/Users/investigadora/Desktop/OBA_REPORTES_GFW/Dashboard-webpage/Data/data_historico.csv")
+write.csv2(data_hist_export, "/Users/investigadora/Desktop/OBA_REPORTES_GFW/Dashboard-webpage/data_historicov2.csv")
 
 # write.csv(data_historico, "/Users/investigadora/Desktop/OBA_REPORTES_GFW/Dashboard-webpage/Data/data_historico.csv")
