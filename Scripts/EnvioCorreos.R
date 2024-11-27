@@ -12,6 +12,18 @@ send <- "obantioquia@gmail.com"
 to <- c("camilomartinezcmf@gmail.com")
 #to <- c("caemartinezfo@unal.edu.co")
 
+
+# Obtén los archivos y carpetas en el directorio
+archivos <- list.files("/Users/investigadora/Desktop/OBA_REPORTES_GFW/DeforestationData-back/ReportesPDF", full.names = TRUE)
+
+# Obtén la información de los archivos
+info_archivos <- file.info(archivos)
+
+# Ordena por fecha de modificación (mtime) de manera descendente
+archivos_ordenados <- archivos[order(info_archivos$mtime, decreasing = TRUE)]
+
+archivo_adjunto <- archivos_ordenados[1]
+
 # Composición del correo, asunto, redacción y archivos adjuntos. 
 email <- gm_mime() |>
   gm_to(to) |>
@@ -25,7 +37,7 @@ email <- gm_mime() |>
            "Regards", "\n",
            "Observatorio de Bosques de Antioquia.")
   ) |> 
-  gm_attach_file("Reporte_pdf_dash.pdf") # Archivo de reporte adjunto
+  gm_attach_file(archivo_adjunto) # Archivo de reporte adjunto
 
 
 
