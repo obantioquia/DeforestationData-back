@@ -18,21 +18,21 @@ pagedown::chrome_print("Reporte_pdf_dash.html",
 
 # Subir reportes a OneDrive
 
-library(Microsoft365R)
-odb <- get_business_onedrive()
-
-odb$list_files("Reportes_PDF-integracionAlertas")
-
-dir("ReportesPDF")
-
-# Obtén los archivos y carpetas en el directorio
-archivos <- list.files("/Users/investigadora/Desktop/OBA_REPORTES_GFW/DeforestationData-back/ReportesPDF", full.names = TRUE)
-
-# Obtén la información de los archivos
-info_archivos <- file.info(archivos)
-
-# Ordena por fecha de modificación (mtime) de manera descendente
-archivos_ordenados <- archivos[order(info_archivos$mtime, decreasing = TRUE)]
-
-odb$upload_file("Reporte_pdf_dash.pdf", dest="Reportes_PDF-integracionAlertas/")
+# library(Microsoft365R)
+# odb <- get_business_onedrive()
+# 
+# odb$list_files("Reportes_PDF-integracionAlertas")
+# 
+# dir("ReportesPDF")
+# 
+# # Obtén los archivos y carpetas en el directorio
+# archivos <- list.files("/Users/investigadora/Desktop/OBA_REPORTES_GFW/DeforestationData-back/ReportesPDF", full.names = TRUE)
+# 
+# # Obtén la información de los archivos
+# info_archivos <- file.info(archivos)
+# 
+# # Ordena por fecha de modificación (mtime) de manera descendente
+# archivos_ordenados <- archivos[order(info_archivos$mtime, decreasing = TRUE)]
+# 
+# odb$upload_file("Reporte_pdf_dash.pdf", dest="Reportes_PDF-integracionAlertas/")
 
