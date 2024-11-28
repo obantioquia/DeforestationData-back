@@ -52,6 +52,23 @@ PC <-  rbind(PC_1[, c(1,dim(PC_1)[2])],
 fecha.init <- as.Date(range(PC$Fecha..UTC)[1])
 fecha.fin <- as.Date(range(PC$Fecha..UTC)[2])
 
+lista <- list(atd_1, atd_2, atd_poligonos_1, atd_poligonos_2)
+
+
+tipo <- c(as.character(st_geometry_type(atd_1)[1]), 
+          as.character(st_geometry_type(atd_2)[1]), 
+          as.character(st_geometry_type(atd_poligonos_1)[1]), 
+          as.character(st_geometry_type(atd_poligonos_2)[1]))
+
+tipoPunto <- which(tipo == "POINT")
+tipoPoligono <- which(tipo == "POLYGON")
+
+atd_1 <- lista[[tipoPunto[1]]]
+atd_2 <- lista[[tipoPunto[2]]]
+
+atd_poligonos_1 <- lista[[tipoPoligono[1]]]
+atd_poligonos_2 <- lista[[tipoPoligono[2]]]
+
 
 atd_poligonos <-  rbind(atd_poligonos_1[, dim(atd_poligonos_1)[2]],
                         atd_poligonos_2[, dim(atd_poligonos_2)[2]])
