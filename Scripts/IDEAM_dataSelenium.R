@@ -639,8 +639,8 @@ remDr$close()
 #system('taskkill /im java.exe /f')
 
 
-#data_file_names_previous <- data_file_names[1:2]
-#save(data_file_names_previous, file="subcarpetasAlertasIDEAM.RData")
+data_file_names_previous <- data_file_names[1:2]
+save(data_file_names_previous, file="subcarpetasAlertasIDEAM.RData")
 
 
 
