@@ -131,3 +131,80 @@ st_write(atd_ant,
          append=F)
 
 setwd("/Users/investigadora/Desktop/OBA_REPORTES_GFW/DeforestationData-back")
+
+
+## Historico
+setwd("/Users/investigadora/Desktop/OBA_REPORTES_GFW/Alertas_IDEAM_Selenium_historico")
+
+# Listar archivos y ordenar con fecha mas reciente 
+carpetas <- list.files(full.names = TRUE)
+info_archivos <- file.info(carpetas)
+archivos_ordenados <- carpetas[order(info_archivos$atime, decreasing = TRUE)]
+
+lastFile <- archivos_ordenados[1]
+sistemaAlertas <- dir(lastFile)
+
+setwd(paste0("/Users/investigadora/Desktop/OBA_REPORTES_GFW/Alertas_IDEAM_Selenium_historico/",
+             lastFile))
+
+ruta <- paste0("/Users/investigadora/Desktop/OBA_REPORTES_GFW/Alertas_IDEAM_Selenium_historico/",
+               lastFile)
+
+countAlertas <- c()
+for(i in sistemaAlertas){
+  setwd(paste0(ruta,"/",i))
+  archivos_shp <- dir()[grepl("\\.shp$", dir())][1]
+  alertas <- st_read(archivos_shp)
+  alertas_Ant <- st_intersection(alertas, Antioquia.geojson)
+  countAlertas <- c(countAlertas, dim(alertas_Ant)[1])
+}
+
+setwd("/Users/investigadora/Desktop/OBA_REPORTES_GFW/DeforestationData-back")
+
+source("/Users/investigadora/Desktop/OBA_REPORTES_GFW/DeforestationData-back/Scripts/consultaGFWFunction.R")
+
+consulta_GFW_data_vec <- Vectorize(consulta_GFW_data)
+
+if(length(countAlertas) %% 2 == 0){
+  grupo <- rep(1:(length(countAlertas)/2), each = 2)
+  total_quincenal <- tapply(countAlertas, grupo, sum)
+  
+  fecha_fin <- fecha.fin
+  fecha_alm <- c()
+  for(i in 1:length(total_quincenal)){
+    fecha_fin <- fecha_fin - 14
+    fecha_alm <- c(fecha_alm, fecha_fin)
+  }
+  
+  fecha_alm <- as.Date(fecha_alm)
+  fecha_inicio <- fecha_alm - 14
+  
+  alertas_GFW_hist <- consulta_GFW_data_vec(fecha_inicio, fecha_alm)
+  
+  data_histG <- read.csv2("/Users/investigadora/Desktop/OBA_REPORTES_GFW/Dashboard-webpage/data_historicov2.csv")
+  
+  if(dim(data_histG)[2] > 3){
+    data_histG <- data_histG[, (dim(data_histG)[2] - 2): dim(data_histG)[2]]
+  }else{
+    data_histG <- data_histG
+  }
+  
+  
+  data_historico <- data.frame(FechaPublicacion = fecha_alm,
+                               AlertasIDEAM = total_quincenal,
+                               AlertasGFW = alertas_GFW_hist)
+  
+  data_historico <- data_historico[order(data_historico$FechaPublicacion),]
+  data_historico$FechaPublicacion <- as.character(data_historico$FechaPublicacion)
+  
+  data_hist_export <- rbind(data_histG, data_historico)
+  
+  write.csv2(data_hist_export, "/Users/investigadora/Desktop/OBA_REPORTES_GFW/Dashboard-webpage/data_historicov2.csv")
+  
+  
+} else {
+  
+  # Trabajar en esto
+  print("Registros impares")
+  
+}

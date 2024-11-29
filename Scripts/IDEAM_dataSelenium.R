@@ -123,363 +123,527 @@ data_file_names <- lapply(ElementosAlertas, function(x) {
   x$getElementText() |> unlist()
 }) |> flatten_chr()
 
+
+load("subcarpetasAlertasIDEAM.RData")
+
 data_file_names <- sort(data_file_names, decreasing=TRUE)
 
-# 2. Ubicar los dos primeros
-Reciente1 <- data_file_names[1]
-Reciente2 <- data_file_names[2]
+data_file_names_previous
 
-Estado <- FALSE
-while(Estado != TRUE){
-  Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
+#dplyr::setdiff(data_file_names, data_file_names_previous)
+
+index_previo <- which(data_file_names == data_file_names_previous)[1]
+
+if(index_previo == 1){
+  print("No han habido actualizaciones de alertas IDEAM")
   Sys.sleep(5)
-}
-# 3. Acceder a cada subcarpeta y descargar la información.
-## 3.1. Descargar la primera mas reciente
-Last1 <- remDr$findElement(using = 'xpath', paste0("//button[@title='", Reciente1, "']"))
-Last1$clickElement()
-
-# - Archivos atd
-# Intentar listar todos los elementos
-Estado <- FALSE
-while(Estado != TRUE){
-  Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
+  next
+}else{
+  files_download <- data_file_names[1:index_previo-1]
+  
+  # 2. Ubicar los dos primeros
+  Reciente1 <- files_download[1]
+  Reciente2 <- files_download[2]
+  
+  Estado <- FALSE
+  while(Estado != TRUE){
+    Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
+    Sys.sleep(5)
+  }
+  # 3. Acceder a cada subcarpeta y descargar la información.
+  ## 3.1. Descargar la primera mas reciente
+  Last1 <- remDr$findElement(using = 'xpath', paste0("//button[@title='", Reciente1, "']"))
+  Last1$clickElement()
+  
+  # - Archivos atd
+  # Intentar listar todos los elementos
+  Estado <- FALSE
+  while(Estado != TRUE){
+    Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
+    Sys.sleep(5)
+  }
+  
+  Elementos_lista <- remDr$findElements(using = 'xpath', "//button[@data-automationid = 'FieldRenderer-name']") |>
+                        lapply(function(x) {
+                          x$getElementText() |> unlist()
+                          }) |> flatten_chr()
+  
+  atd_shape <- Elementos_lista[-c(1,2)]
+  for(i in 1:length(atd_shape)){
+    remDr$findElement(using = 'xpath', paste0("//div[@title = '",atd_shape[i],"']"))$clickElement()
+  }
+  
+  Estado <- FALSE
+  while(Estado != TRUE){
+    Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
+    Sys.sleep(5)
+  }
+  
+  remDr$findElement(using = 'xpath', "//i[@data-icon-name = 'download']")$clickElement()
+  
+  Estado <- FALSE
+  while(Estado != TRUE){
+    Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
+    Sys.sleep(5)
+  }
+  
+  # - going to Puntos de calor
+  remDr$findElement(using = 'xpath', "//button[@title = 'Puntos de calor']")$clickElement()
+  
+  Estado <- FALSE
+  while(Estado != TRUE){
+    Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
+    Sys.sleep(5)
+  }
+  
+  Elementos_lista <- remDr$findElements(using = 'xpath', "//button[@data-automationid = 'FieldRenderer-name']") |>
+    lapply(function(x) {
+      x$getElementText() |> unlist()
+    }) |> flatten_chr()
+  
+  Estado <- FALSE
+  while(Estado != TRUE){
+    Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
+    Sys.sleep(5)
+  }
+  
+  for(i in 1:length(Elementos_lista)){
+    remDr$findElement(using = 'xpath', paste0("//div[@title = '",Elementos_lista[i],"']"))$clickElement()
+    Sys.sleep(3)
+  }
+  
+  Estado <- FALSE
+  while(Estado != TRUE){
+    Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
+    Sys.sleep(5)
+  }
+  
+  remDr$findElement(using = 'xpath', "//i[@data-icon-name = 'download']")$clickElement()
+  
+  Estado <- FALSE
+  while(Estado != TRUE){
+    Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
+    Sys.sleep(5)
+  }
+  
+  remDr$goBack()
+  
+  
+  # - going to Poligonos
+  Estado <- FALSE
+  while(Estado != TRUE){
+    Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
+    Sys.sleep(5)
+  }
+  
+  remDr$findElement(using = 'xpath', "//button[@title = 'Poligonos']")$clickElement()
+  
+  Estado <- FALSE
+  while(Estado != TRUE){
+    Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
+    Sys.sleep(5)
+  }
+  
+  Elementos_lista <- remDr$findElements(using = 'xpath', "//button[@data-automationid = 'FieldRenderer-name']") |>
+    lapply(function(x) {
+      x$getElementText() |> unlist()
+    }) |> flatten_chr()
+  
+  Estado <- FALSE
+  while(Estado != TRUE){
+    Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
+    Sys.sleep(5)
+  }
+  
+  for(i in 1:length(Elementos_lista)){
+    remDr$findElement(using = 'xpath', paste0("//div[@title = '",Elementos_lista[i],"']"))$clickElement()
+    Sys.sleep(3)
+  }
+  
+  Estado <- FALSE
+  while(Estado != TRUE){
+    Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
+    Sys.sleep(5)
+  }
+  
+  remDr$findElement(using = 'xpath', "//i[@data-icon-name = 'download']")$clickElement()
+  
+  Estado <- FALSE
+  while(Estado != TRUE){
+    Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
+    Sys.sleep(5)
+  }
+  
+  remDr$goBack()
+  
+  Estado <- FALSE
+  while(Estado != TRUE){
+    Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
+    Sys.sleep(5)
+  }
+  
+  remDr$goBack()
+  
+  
+  
+  
+  ## 3.2. Descargar la segunda mas reciente
+  
+  Estado <- FALSE
+  while(Estado != TRUE){
+    Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
+    Sys.sleep(5)
+  }
+  
+  Last1 <- remDr$findElement(using = 'xpath', paste0("//button[@title='", Reciente2, "']"))
+  Last1$clickElement()
+  
+  remDr$setTimeout(type = "script", milliseconds = 30000) # Aumentar a 30 segundos
+  
+  Estado <- FALSE
+  while(Estado != TRUE){
+    Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
+    Sys.sleep(5)
+  }
+  # - Archivos atd
+  # Intentar listar todos los elementos
+  Elementos_lista <- remDr$findElements(using = 'xpath', "//button[@data-automationid = 'FieldRenderer-name']") |>
+    lapply(function(x) {
+      x$getElementText() |> unlist()
+    }) |> flatten_chr()
+  
+  
+  atd_shape <- Elementos_lista[-c(1,2)]
+  
+  Estado <- FALSE
+  while(Estado != TRUE){
+    Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
+    Sys.sleep(5)
+  }
+  
+  for(i in 1:length(atd_shape)){
+    remDr$findElement(using = 'xpath', paste0("//div[@title = '",atd_shape[i],"']"))$clickElement()
+    Sys.sleep(5)
+  }
+  
+  Estado <- FALSE
+  while(Estado != TRUE){
+    Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
+    Sys.sleep(5)
+  }
+  
+  remDr$findElement(using = 'xpath', "//i[@data-icon-name = 'download']")$clickElement()
+  
+  Estado <- FALSE
+  while(Estado != TRUE){
+    Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
+    Sys.sleep(5)
+  }
+  
+  # - going to Puntos de calor
+  
+  remDr$findElement(using = 'xpath', "//button[@title = 'Puntos de calor']")$clickElement()
+  
+  Estado <- FALSE
+  while(Estado != TRUE){
+    Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
+    Sys.sleep(5)
+  }
+  
+  Elementos_lista <- remDr$findElements(using = 'xpath', "//button[@data-automationid = 'FieldRenderer-name']") |>
+    lapply(function(x) {
+      x$getElementText() |> unlist()
+    }) |> flatten_chr()
+  
+  Estado <- FALSE
+  while(Estado != TRUE){
+    Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
+    Sys.sleep(5)
+  }
+  
+  for(i in 1:length(Elementos_lista)){
+    remDr$findElement(using = 'xpath', paste0("//div[@title = '",Elementos_lista[i],"']"))$clickElement()
+    Sys.sleep(5)
+  }
+  
+  Estado <- FALSE
+  while(Estado != TRUE){
+    Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
+    Sys.sleep(5)
+  }
+  
+  remDr$findElement(using = 'xpath', "//i[@data-icon-name = 'download']")$clickElement()
+  
+  Estado <- FALSE
+  while(Estado != TRUE){
+    Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
+    Sys.sleep(5)
+  }
+  
+  remDr$goBack()
+  
+  Estado <- FALSE
+  while(Estado != TRUE){
+    Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
+    Sys.sleep(5)
+  }
+  
+  # - going to Poligonos
+  remDr$findElement(using = 'xpath', "//button[@title = 'Poligonos']")$clickElement()
+  
+  Estado <- FALSE
+  while(Estado != TRUE){
+    Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
+    Sys.sleep(5)
+  }
+  
+  Elementos_lista <- remDr$findElements(using = 'xpath', "//button[@data-automationid = 'FieldRenderer-name']") |>
+    lapply(function(x) {
+      x$getElementText() |> unlist()
+    }) |> flatten_chr()
+  
+  Estado <- FALSE
+  while(Estado != TRUE){
+    Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
+    Sys.sleep(5)
+  }
+  
+  for(i in 1:length(Elementos_lista)){
+    remDr$findElement(using = 'xpath', paste0("//div[@title = '",Elementos_lista[i],"']"))$clickElement()
+    Sys.sleep(5)
+  }
+  
+  Estado <- FALSE
+  while(Estado != TRUE){
+    Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
+    Sys.sleep(5)
+  }
+  
+  remDr$findElement(using = 'xpath', "//i[@data-icon-name = 'download']")$clickElement()
+  
+  Estado <- FALSE
+  while(Estado != TRUE){
+    Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
+    Sys.sleep(5)
+  }
+  
+  remDr$goBack()
+  
+  Estado <- FALSE
+  while(Estado != TRUE){
+    Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
+    Sys.sleep(5)
+  }
+  
+  remDr$goBack()
+  #_______________________________________________________________________________
+  ## Mover archivos a OneDrive personal
   Sys.sleep(5)
+  
+  # Obtén los archivos y carpetas en el directorio
+  archivos <- list.files("/Users/investigadora/Downloads", full.names = TRUE)
+  
+  # Obtén la información de los archivos
+  info_archivos <- file.info(archivos)
+  
+  # Ordena por fecha de modificación (mtime) de manera descendente
+  archivos_ordenados <- archivos[order(info_archivos$mtime, decreasing = TRUE)]
+  
+  # Muestra los archivos ordenados
+  print(archivos_ordenados)
+  
+  
+  # Carpeta de destino donde quieres mover los archivos
+  destino <- "/Users/investigadora/Desktop/OBA_REPORTES_GFW/Alertas_IDEAM_Selenium"
+  
+  # Selecciona los archivos de interés (por ejemplo, los 3 más recientes)
+  archivos_a_mover <- archivos_ordenados[1:6]
+  
+  # Mover los archivos a la carpeta de destino
+  sapply(archivos_a_mover, function(archivo) {
+    # Extraer el nombre base del archivo
+    nombre_archivo <- basename(archivo)
+  
+    # Crear la ruta completa de destino
+    destino_completo <- file.path(destino, nombre_archivo)
+  
+    # Mover el archivo
+    file.rename(archivo, destino_completo)
+  })
+  
+  #setwd("/Users/investigadora/OneDrive - JBMED/Alertas_IDEAM_Selenium")
+  
+  setwd("/Users/investigadora/Desktop/OBA_REPORTES_GFW/Alertas_IDEAM_Selenium")
+  
+  directorio <- paste0(Reciente1,"____",Reciente2)
+  
+  #dir.create(paste0(directorio))
+  
+  if (!dir.exists(paste0(getwd(), "/", directorio))) {
+    dir.create(paste0(getwd(), "/", directorio))
+  }
+  
+  for(i in (length(dir())-5):length(dir())){
+    unzip(paste0(getwd(),"/",dir()[i]), exdir = paste0(getwd(),"/",directorio),
+          overwrite = TRUE)
+  }
+  
+  longitud <- length(dir())
+  
+  deleted.files <- dir()[(longitud-5):longitud]
+  file.remove(deleted.files)
+  
+  # Ahora se verifica que la diferencia de carpetas de alertas sea mayor a 2, en 
+  # caso afirmativo se descargan solo las alertas
+  
+  setwd("/Users/investigadora/Desktop/OBA_REPORTES_GFW/DeforestationData-back")
+  
+  if(length(files_download) > 2){ 
+    
+    for(i in 3:length(files_download)){
+      
+      Estado <- FALSE
+      while(Estado != TRUE){
+        Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
+        Sys.sleep(5)
+      }
+      # 3. Acceder a cada subcarpeta y descargar la información.
+      ## 3.1. Descargar la primera mas reciente
+      Last1 <- remDr$findElement(using = 'xpath', paste0("//button[@title='", files_download[i], "']"))
+      Last1$clickElement()
+      
+      # - Archivos atd
+      # Intentar listar todos los elementos
+      Estado <- FALSE
+      while(Estado != TRUE){
+        Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
+        Sys.sleep(5)
+      }
+      
+      Elementos_lista <- remDr$findElements(using = 'xpath', "//button[@data-automationid = 'FieldRenderer-name']") |>
+        lapply(function(x) {
+          x$getElementText() |> unlist()
+        }) |> flatten_chr()
+      
+      atd_shape <- Elementos_lista[-c(1,2)]
+      for(i in 1:length(atd_shape)){
+        remDr$findElement(using = 'xpath', paste0("//div[@title = '",atd_shape[i],"']"))$clickElement()
+      }
+      
+      Estado <- FALSE
+      while(Estado != TRUE){
+        Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
+        Sys.sleep(5)
+      }
+      
+      remDr$findElement(using = 'xpath', "//i[@data-icon-name = 'download']")$clickElement()
+      
+      Estado <- FALSE
+      while(Estado != TRUE){
+        Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
+        Sys.sleep(5)
+      }
+      
+      remDr$goBack()
+      
+      Estado <- FALSE
+      while(Estado != TRUE){
+        Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
+        Sys.sleep(5)
+      }
+    }
+    
+    # Se descargan los archivos, ahora falta procesarlos
+    
+    ## Mover archivos a OneDrive personal
+    Sys.sleep(5)
+    
+    # Obtén los archivos y carpetas en el directorio
+    archivos <- list.files("/Users/investigadora/Downloads", full.names = TRUE)
+    
+    # Obtén la información de los archivos
+    info_archivos <- file.info(archivos)
+    
+    # Ordena por fecha de modificación (mtime) de manera descendente
+    archivos_ordenados <- archivos[order(info_archivos$mtime, decreasing = TRUE)]
+    
+    # Muestra los archivos ordenados
+    print(archivos_ordenados)
+    
+    
+    # Carpeta de destino donde quieres mover los archivos
+    destino <- "/Users/investigadora/Desktop/OBA_REPORTES_GFW/Alertas_IDEAM_Selenium_historico"
+    
+    # Selecciona los archivos de interés (por ejemplo, los 6 más recientes)
+    archivos_a_mover <- archivos_ordenados[1:length(3:length(files_download))]
+    
+    # Mover los archivos a la carpeta de destino
+    sapply(archivos_a_mover, function(archivo) {
+      # Extraer el nombre base del archivo
+      nombre_archivo <- basename(archivo)
+      
+      # Crear la ruta completa de destino
+      destino_completo <- file.path(destino, nombre_archivo)
+      
+      # Mover el archivo
+      file.rename(archivo, destino_completo)
+    })
+    
+    #setwd("/Users/investigadora/OneDrive - JBMED/Alertas_IDEAM_Selenium")
+    
+    setwd("/Users/investigadora/Desktop/OBA_REPORTES_GFW/Alertas_IDEAM_Selenium_historico")
+    
+    directorio <- paste0("Alerts_hist","_",Sys.Date())
+    
+    #dir.create(paste0(directorio))
+    
+    if (!dir.exists(paste0(getwd(), "/", directorio))) {
+      dir.create(paste0(getwd(), "/", directorio))
+    }
+    
+    for(i in (length(dir())- (length(3:length(files_download))-1)):length(dir())){
+      
+      if (!dir.exists(paste0(getwd(), "/", directorio,"/", i))) {
+        dir.create(paste0(getwd(), "/", directorio,"/", i))
+      }
+      
+      unzip(paste0(getwd(),"/",dir()[i]), exdir = paste0(getwd(),"/",directorio,"/", i),
+            overwrite = TRUE)
+    }
+    
+    longitud <- length(dir())
+    
+    deleted.files <- dir()[(longitud-(length(3:length(files_download))-1)):longitud]
+    file.remove(deleted.files)
+    
+    
+    ####
+    
+    
+    
+    
+    
+    
+  }else{
+    next
+  }
+  
+  source("/Users/investigadora/Desktop/OBA_REPORTES_GFW/DeforestationData-back/Scripts/IDEAM_data_processing.R")
+  
 }
 
-Elementos_lista <- remDr$findElements(using = 'xpath', "//button[@data-automationid = 'FieldRenderer-name']") |>
-                      lapply(function(x) {
-                        x$getElementText() |> unlist()
-                        }) |> flatten_chr()
-
-atd_shape <- Elementos_lista[-c(1,2)]
-for(i in 1:length(atd_shape)){
-  remDr$findElement(using = 'xpath', paste0("//div[@title = '",atd_shape[i],"']"))$clickElement()
-}
-
-Estado <- FALSE
-while(Estado != TRUE){
-  Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
-  Sys.sleep(5)
-}
-
-remDr$findElement(using = 'xpath', "//i[@data-icon-name = 'download']")$clickElement()
-
-Estado <- FALSE
-while(Estado != TRUE){
-  Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
-  Sys.sleep(5)
-}
-
-# - going to Puntos de calor
-remDr$findElement(using = 'xpath', "//button[@title = 'Puntos de calor']")$clickElement()
-
-Estado <- FALSE
-while(Estado != TRUE){
-  Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
-  Sys.sleep(5)
-}
-
-Elementos_lista <- remDr$findElements(using = 'xpath', "//button[@data-automationid = 'FieldRenderer-name']") |>
-  lapply(function(x) {
-    x$getElementText() |> unlist()
-  }) |> flatten_chr()
-
-Estado <- FALSE
-while(Estado != TRUE){
-  Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
-  Sys.sleep(5)
-}
-
-for(i in 1:length(Elementos_lista)){
-  remDr$findElement(using = 'xpath', paste0("//div[@title = '",Elementos_lista[i],"']"))$clickElement()
-  Sys.sleep(3)
-}
-
-Estado <- FALSE
-while(Estado != TRUE){
-  Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
-  Sys.sleep(5)
-}
-
-remDr$findElement(using = 'xpath', "//i[@data-icon-name = 'download']")$clickElement()
-
-Estado <- FALSE
-while(Estado != TRUE){
-  Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
-  Sys.sleep(5)
-}
-
-remDr$goBack()
 
 
-# - going to Poligonos
-Estado <- FALSE
-while(Estado != TRUE){
-  Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
-  Sys.sleep(5)
-}
-
-remDr$findElement(using = 'xpath', "//button[@title = 'Poligonos']")$clickElement()
-
-Estado <- FALSE
-while(Estado != TRUE){
-  Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
-  Sys.sleep(5)
-}
-
-Elementos_lista <- remDr$findElements(using = 'xpath', "//button[@data-automationid = 'FieldRenderer-name']") |>
-  lapply(function(x) {
-    x$getElementText() |> unlist()
-  }) |> flatten_chr()
-
-Estado <- FALSE
-while(Estado != TRUE){
-  Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
-  Sys.sleep(5)
-}
-
-for(i in 1:length(Elementos_lista)){
-  remDr$findElement(using = 'xpath', paste0("//div[@title = '",Elementos_lista[i],"']"))$clickElement()
-  Sys.sleep(3)
-}
-
-Estado <- FALSE
-while(Estado != TRUE){
-  Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
-  Sys.sleep(5)
-}
-
-remDr$findElement(using = 'xpath', "//i[@data-icon-name = 'download']")$clickElement()
-
-Estado <- FALSE
-while(Estado != TRUE){
-  Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
-  Sys.sleep(5)
-}
-
-remDr$goBack()
-
-Estado <- FALSE
-while(Estado != TRUE){
-  Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
-  Sys.sleep(5)
-}
-
-remDr$goBack()
-
-
-
-
-## 3.2. Descargar la segunda mas reciente
-
-Estado <- FALSE
-while(Estado != TRUE){
-  Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
-  Sys.sleep(5)
-}
-
-Last1 <- remDr$findElement(using = 'xpath', paste0("//button[@title='", Reciente2, "']"))
-Last1$clickElement()
-
-remDr$setTimeout(type = "script", milliseconds = 30000) # Aumentar a 30 segundos
-
-Estado <- FALSE
-while(Estado != TRUE){
-  Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
-  Sys.sleep(5)
-}
-# - Archivos atd
-# Intentar listar todos los elementos
-Elementos_lista <- remDr$findElements(using = 'xpath', "//button[@data-automationid = 'FieldRenderer-name']") |>
-  lapply(function(x) {
-    x$getElementText() |> unlist()
-  }) |> flatten_chr()
-
-
-atd_shape <- Elementos_lista[-c(1,2)]
-
-Estado <- FALSE
-while(Estado != TRUE){
-  Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
-  Sys.sleep(5)
-}
-
-for(i in 1:length(atd_shape)){
-  remDr$findElement(using = 'xpath', paste0("//div[@title = '",atd_shape[i],"']"))$clickElement()
-  Sys.sleep(5)
-}
-
-Estado <- FALSE
-while(Estado != TRUE){
-  Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
-  Sys.sleep(5)
-}
-
-remDr$findElement(using = 'xpath', "//i[@data-icon-name = 'download']")$clickElement()
-
-Estado <- FALSE
-while(Estado != TRUE){
-  Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
-  Sys.sleep(5)
-}
-
-# - going to Puntos de calor
-
-remDr$findElement(using = 'xpath', "//button[@title = 'Puntos de calor']")$clickElement()
-
-Estado <- FALSE
-while(Estado != TRUE){
-  Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
-  Sys.sleep(5)
-}
-
-Elementos_lista <- remDr$findElements(using = 'xpath', "//button[@data-automationid = 'FieldRenderer-name']") |>
-  lapply(function(x) {
-    x$getElementText() |> unlist()
-  }) |> flatten_chr()
-
-Estado <- FALSE
-while(Estado != TRUE){
-  Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
-  Sys.sleep(5)
-}
-
-for(i in 1:length(Elementos_lista)){
-  remDr$findElement(using = 'xpath', paste0("//div[@title = '",Elementos_lista[i],"']"))$clickElement()
-  Sys.sleep(5)
-}
-
-Estado <- FALSE
-while(Estado != TRUE){
-  Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
-  Sys.sleep(5)
-}
-
-remDr$findElement(using = 'xpath', "//i[@data-icon-name = 'download']")$clickElement()
-
-Estado <- FALSE
-while(Estado != TRUE){
-  Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
-  Sys.sleep(5)
-}
-
-remDr$goBack()
-
-Estado <- FALSE
-while(Estado != TRUE){
-  Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
-  Sys.sleep(5)
-}
-
-# - going to Poligonos
-remDr$findElement(using = 'xpath', "//button[@title = 'Poligonos']")$clickElement()
-
-Estado <- FALSE
-while(Estado != TRUE){
-  Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
-  Sys.sleep(5)
-}
-
-Elementos_lista <- remDr$findElements(using = 'xpath', "//button[@data-automationid = 'FieldRenderer-name']") |>
-  lapply(function(x) {
-    x$getElementText() |> unlist()
-  }) |> flatten_chr()
-
-Estado <- FALSE
-while(Estado != TRUE){
-  Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
-  Sys.sleep(5)
-}
-
-for(i in 1:length(Elementos_lista)){
-  remDr$findElement(using = 'xpath', paste0("//div[@title = '",Elementos_lista[i],"']"))$clickElement()
-  Sys.sleep(5)
-}
-
-Estado <- FALSE
-while(Estado != TRUE){
-  Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
-  Sys.sleep(5)
-}
-
-remDr$findElement(using = 'xpath', "//i[@data-icon-name = 'download']")$clickElement()
-
-Estado <- FALSE
-while(Estado != TRUE){
-  Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
-  Sys.sleep(5)
-}
-
-remDr$goBack()
-
-Estado <- FALSE
-while(Estado != TRUE){
-  Estado <- remDr$executeScript("return document.readyState == 'complete';")[[1]][1]
-  Sys.sleep(5)
-}
-
-remDr$goBack()
 
 remDr$close()
 #system('taskkill /im java.exe /f')
 
 
-#_______________________________________________________________________________
-## Mover archivos a OneDrive personal
-Sys.sleep(5)
-
-# Obtén los archivos y carpetas en el directorio
-archivos <- list.files("/Users/investigadora/Downloads", full.names = TRUE)
-
-# Obtén la información de los archivos
-info_archivos <- file.info(archivos)
-
-# Ordena por fecha de modificación (mtime) de manera descendente
-archivos_ordenados <- archivos[order(info_archivos$mtime, decreasing = TRUE)]
-
-# Muestra los archivos ordenados
-print(archivos_ordenados)
+#data_file_names_previous <- data_file_names[1:2]
+#save(data_file_names_previous, file="subcarpetasAlertasIDEAM.RData")
 
 
-# Carpeta de destino donde quieres mover los archivos
-destino <- "/Users/investigadora/Desktop/OBA_REPORTES_GFW/Alertas_IDEAM_Selenium"
 
-# Selecciona los archivos de interés (por ejemplo, los 3 más recientes)
-archivos_a_mover <- archivos_ordenados[1:6]
 
-# Mover los archivos a la carpeta de destino
-sapply(archivos_a_mover, function(archivo) {
-  # Extraer el nombre base del archivo
-  nombre_archivo <- basename(archivo)
-
-  # Crear la ruta completa de destino
-  destino_completo <- file.path(destino, nombre_archivo)
-
-  # Mover el archivo
-  file.rename(archivo, destino_completo)
-})
-
-#setwd("/Users/investigadora/OneDrive - JBMED/Alertas_IDEAM_Selenium")
-
-setwd("/Users/investigadora/Desktop/OBA_REPORTES_GFW/Alertas_IDEAM_Selenium")
-
-directorio <- paste0(Reciente1,"____",Reciente2)
-
-#dir.create(paste0(directorio))
-
-if (!dir.exists(paste0(getwd(), "/", directorio))) {
-  dir.create(paste0(getwd(), "/", directorio))
-}
-
-for(i in (length(dir())-5):length(dir())){
-  unzip(paste0(getwd(),"/",dir()[i]), exdir = paste0(getwd(),"/",directorio),
-        overwrite = TRUE)
-}
-
-longitud <- length(dir())
-
-deleted.files <- dir()[(longitud-5):longitud]
-file.remove(deleted.files)
 
 
