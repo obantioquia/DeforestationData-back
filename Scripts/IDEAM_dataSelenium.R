@@ -137,7 +137,8 @@ index_previo <- which(data_file_names == data_file_names_previous)[1]
 if(index_previo == 1){
   print("No han habido actualizaciones de alertas IDEAM")
   Sys.sleep(5)
-  next
+  remDr$close()
+#  next
 }else{
   files_download <- data_file_names[1:index_previo-1]
   
