@@ -9,8 +9,12 @@ gm_auth(email = TRUE)
 send <- "obantioquia@gmail.com"
 
 # Aquí iria la lista de correos
-to <- c("camilomartinezcmf@gmail.com")
+# to <- c("camilomartinezcmf@gmail.com")
 #to <- c("caemartinezfo@unal.edu.co")
+
+library(gsheet)
+df <- gsheet2tbl('https://docs.google.com/spreadsheets/d/1n6jvpCRxxDo8ejJzgMh9CVvESarwq_aalncUlUnKAv8/edit?gid=875585020#gid=875585020')
+to <- df$`Correo electrónico`
 
 
 # Obtén los archivos y carpetas en el directorio
@@ -28,14 +32,15 @@ archivo_adjunto <- archivos_ordenados[1]
 email <- gm_mime() |>
   gm_to(to) |>
   gm_from(send) |>
-  gm_subject(paste("Email from R")) |> # Asunto del correo
+  gm_subject(paste("Alertas de deforestación OBA")) |> # Asunto del correo
   gm_text_body(
-    paste0("Dear all", "\n",  # Cuerpo del correo
-           "Hello!", "\n",
-           "Hi!", "\n",
-           "your text here","\n",
-           "Regards", "\n",
-           "Observatorio de Bosques de Antioquia.")
+    paste0("Alertas de deforestación OBA ", "\n\n",  # Cuerpo del correo
+           "Detectamos alertas de deforestación en Antioquia.", "\n\n",
+           "Este es el reporte quincenal de las últimas alertas de deforestación del Observatorio de Bosques de Antioquia que integra los sistemas de Global Forest Watch e IDEAM.", "\n\n",
+           "Conoce más sobre el OBA en https://observatoriobosquesantioquia.org/ ", "\n\n",
+           "Síguenos en redes sociales:", "\n",
+           "https://www.facebook.com/ObservatorioBosquesAntioquia ","\n",
+           "https://www.instagram.com/bosquesantioquia/ ")
   ) |> 
   gm_attach_file(archivo_adjunto) # Archivo de reporte adjunto
 
