@@ -16,9 +16,9 @@ while (!success) {
   tryCatch({
     # Ejecuta el código de rsDriver
     remote_driver_object <- rsDriver(browser = 'chrome',
-                                     chromever = '131.0.6778.85',
+                                     chromever = '130.0.6723.116',
                                      verbose = T,
-                                     port = 33112L)
+                                     port = free_port())
 
     # Si se ejecuta correctamente
     success <- TRUE  # El código fue exitoso, salir del bucle
@@ -74,7 +74,7 @@ while(Estado != TRUE){
   Sys.sleep(5)
 }
 password <- remDr$findElement(using = 'xpath', '//input[@type="password"]')
-password$sendKeysToElement(list("ObservatorioGFW.2023"))
+password$sendKeysToElement(list(read.csv("clave_OBAjbotanico.csv")$x))
 Login <- remDr$findElement(using = 'xpath', '//input[@type="submit"]')
 Login$clickElement()
 

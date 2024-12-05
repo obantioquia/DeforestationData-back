@@ -13,7 +13,31 @@ send <- "obantioquia@gmail.com"
 #to <- c("caemartinezfo@unal.edu.co")
 
 library(gsheet)
-df <- gsheet2tbl('https://docs.google.com/spreadsheets/d/1n6jvpCRxxDo8ejJzgMh9CVvESarwq_aalncUlUnKAv8/edit?gid=875585020#gid=875585020')
+
+max_intentos <- 8
+intento <- 1
+exito <- FALSE
+
+while (intento <= max_intentos && !exito) {
+  tryCatch({
+    # Intento de enviar el mensaje
+    df <- gsheet2tbl('https://docs.google.com/spreadsheets/d/1n6jvpCRxxDo8ejJzgMh9CVvESarwq_aalncUlUnKAv8/edit?gid=875585020#gid=875585020')
+    exito <- TRUE
+    print("Solicitud exitosa")
+    
+  }, error = function(e) {
+    # Manejo de errores
+    print(paste("Error en el intento", intento, ":", e$message))
+    
+    # Incrementar el intento solo si se produce un error
+    intento <- intento + 1
+    
+    # Opcional: agregar un pequeño retraso entre los intentos (evitar demasiados intentos consecutivos)
+    Sys.sleep(2)  # Pausa de 2 segundos entre intentos, ajusta si es necesario
+  })
+}
+
+
 to <- df$`Correo electrónico`
 
 
