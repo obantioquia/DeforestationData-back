@@ -15,10 +15,10 @@ while (!success) {
 
   tryCatch({
     # Ejecuta el código de rsDriver
-    remote_driver_object <- rsDriver(browser = 'chrome',
-                                     chromever = '130.0.6723.116',
+    remote_driver_object <- rsDriver(browser = 'firefox',
                                      verbose = T,
-                                     port = free_port())
+                                     port = free_port()
+                                     )
 
     # Si se ejecuta correctamente
     success <- TRUE  # El código fue exitoso, salir del bucle
