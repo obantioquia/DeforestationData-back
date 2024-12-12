@@ -217,7 +217,13 @@ if(dim(data_histG)[2] > 3){
 }
 
 if(last(data_histG)$FechaPublicacion == Fecha_hoy){
+  
+  data_histG[dim(data_histG)[1],] <- data.frame(FechaPublicacion = as.character(Fecha_hoy), 
+                                                AlertasIDEAM = dim(atd_IDEAM)[1],
+                                                AlertasGFW = dim(subdatos_cluster)[1])
+  
   data_hist_export <- data_histG
+  
 }else{
   data_historico <- data.frame(FechaPublicacion = as.character(Fecha_hoy), 
                                AlertasIDEAM = dim(atd_IDEAM)[1],

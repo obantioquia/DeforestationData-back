@@ -133,6 +133,9 @@ st_write(atd_ant,
 setwd("/Users/investigadora/Desktop/OBA_REPORTES_GFW/DeforestationData-back")
 
 
+
+# ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
 ## Historico
 setwd("/Users/investigadora/Desktop/OBA_REPORTES_GFW/Alertas_IDEAM_Selenium_historico")
 
