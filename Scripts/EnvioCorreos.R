@@ -54,18 +54,18 @@ archivo_adjunto <- archivos_ordenados[1]
 
 # Composición del correo, asunto, redacción y archivos adjuntos. 
 email <- gm_mime() |>
-  gm_to(to) |>
+  gm_bcc(to) |>
   gm_from(send) |>
   gm_subject(paste("Alertas de deforestación OBA")) |> # Asunto del correo
-  gm_text_body(
-    paste0("Alertas de deforestación OBA ", "\n\n",  # Cuerpo del correo
-           "Detectamos alertas de deforestación en Antioquia.", "\n\n",
-           "Este es el reporte quincenal de las últimas alertas de deforestación del Observatorio de Bosques de Antioquia que integra los sistemas de Global Forest Watch e IDEAM.", "\n\n",
-           "Consulta la versión interactiva en https://observatoriobosquesantioquia.org/integracion-alertas", "\n\n",
-           "Conoce más sobre el OBA en https://observatoriobosquesantioquia.org/ ", "\n\n", # EN NEGRITA
-           "Síguenos en redes sociales:", "\n",
-           "https://www.facebook.com/ObservatorioBosquesAntioquia ","\n",
-           "https://www.instagram.com/bosquesantioquia/ ")
+  gm_html_body(
+    paste0("Alertas de deforestación OBA", "<br><br>",  # Cuerpo del correo
+           "Detectamos alertas de deforestación en Antioquia.", "<br><br>",
+           "Este es el reporte quincenal de las últimas alertas de deforestación del Observatorio de Bosques de Antioquia que integra los sistemas de Global Forest Watch e IDEAM.", "<br><br>",
+           "<b>Consulta la versión interactiva en <a href='https://observatoriobosquesantioquia.org/integracion-alertas'>https://observatoriobosquesantioquia.org/integracion-alertas</a></b>", "<br><br>",
+           "Conoce más sobre el OBA en <a href='https://observatoriobosquesantioquia.org/'>https://observatoriobosquesantioquia.org/</a>", "<br><br>",  # Texto en negrita
+           "Síguenos en redes sociales:", "<br>",
+           "<a href='https://www.facebook.com/ObservatorioBosquesAntioquia'>https://www.facebook.com/ObservatorioBosquesAntioquia</a>", "<br>",
+           "<a href='https://www.instagram.com/bosquesantioquia/'>https://www.instagram.com/bosquesantioquia/</a>")
   ) |> 
   gm_attach_file(archivo_adjunto) # Archivo de reporte adjunto
 
