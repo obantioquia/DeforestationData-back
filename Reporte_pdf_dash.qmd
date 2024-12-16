@@ -125,8 +125,8 @@ ggplot(top_7_municipios, aes(x = reorder(MPIO_CNMBR, num_alertas), y = num_alert
 #| fig-height: 10
 
 color_scale <- scale_fill_gradient(
-  low = "#f9da00",
-  high = "#f9da00",
+  low = "#ff9f39",
+  high = "#ff9f39",
   limits = c(min_alertas, max_alertas),
   name = "Número de Alertas",
   oob = scales::squish
@@ -178,7 +178,7 @@ tm_shape(Municipios) +
                                   title.fontface = 2,
                                   text.size = 1.1),
           fill.scale = tm_scale(values = c("#AEB6E5FF", "#A93154FF"))) +
-  tm_bubbles(fill = "#f9da00", 
+  tm_bubbles(fill = "#ff9f39", 
              col = "white", 
              size = "Alertas IDEAM",
              size.legend = tm_legend(title = "Alertas IDEAM",
