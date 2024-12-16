@@ -53,7 +53,7 @@ max_alertas <- max(Municipios_Ideam$num_alertas_IDEAM, na.rm = TRUE)
 <i class="bi bi-calendar-week" id="icono-alerta"></i> <span class="textoAlerts">Periodo analizado:</span>
 <span class="valor"> `r paste0(AlertasIDEAM$FechaInit[1], " - ", AlertasIDEAM$FechaFin[1])` </span>
 
-<span class="title-style"> Reporte 1 </span>
+<span class="title-style"> Reporte `r length(dir("ReportesPDF"))+1` </span>
 
 <span class="textoAlerts2">Fecha publicación:</span>
 <span class="valor2"> `r Sys.Date()` </span>
