@@ -61,7 +61,8 @@ email <- gm_mime() |>
     paste0("Alertas de deforestación OBA ", "\n\n",  # Cuerpo del correo
            "Detectamos alertas de deforestación en Antioquia.", "\n\n",
            "Este es el reporte quincenal de las últimas alertas de deforestación del Observatorio de Bosques de Antioquia que integra los sistemas de Global Forest Watch e IDEAM.", "\n\n",
-           "Conoce más sobre el OBA en https://observatoriobosquesantioquia.org/ ", "\n\n",
+           "Consulta la versión interactiva en https://observatoriobosquesantioquia.org/integracion-alertas", "\n\n",
+           "Conoce más sobre el OBA en https://observatoriobosquesantioquia.org/ ", "\n\n", # EN NEGRITA
            "Síguenos en redes sociales:", "\n",
            "https://www.facebook.com/ObservatorioBosquesAntioquia ","\n",
            "https://www.instagram.com/bosquesantioquia/ ")
