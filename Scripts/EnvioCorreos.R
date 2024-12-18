@@ -66,7 +66,7 @@ email <- gm_mime() |>
            "Síguenos en redes sociales:", "<br>",
            "<a href='https://www.facebook.com/ObservatorioBosquesAntioquia'>https://www.facebook.com/ObservatorioBosquesAntioquia</a>", "<br>",
            "<a href='https://www.instagram.com/bosquesantioquia/'>https://www.instagram.com/bosquesantioquia/</a>", "<br><br>",
-           "¿No quieres recibir más correos? ", "<a href='https://forms.gle/WzxTFqbyCycUiazg9'>Haz clic aquí para cancelar tu suscripción</a>")
+           "¿No quieres recibir más correos? ", "<a href='https://forms.gle/V1Es1hHyDJ1K8qJ66'>Haz clic aquí para cancelar tu suscripción</a>")
   ) |> 
   gm_attach_file(archivo_adjunto) # Archivo de reporte adjunto
 
