@@ -1,6 +1,7 @@
 # Script para envío de Reporte a una lista de correos.
 
 library(gmailr)
+library(dplyr)
 
 # Autenticación automática con correo OBA de gmail
 gm_auth_configure(path="key_gmail_OBA.json")
@@ -38,7 +39,56 @@ while (intento <= max_intentos && !exito) {
 }
 
 
-to <- df$`Correo electrónico`
+inscripciones <- df |>
+  select(`Correo electrónico`, `Marca temporal`) |>
+  mutate(estado = 'activo')
+
+inscripciones$`Marca temporal` <- as.POSIXct(
+  inscripciones$`Marca temporal`,
+  format = "%d/%m/%Y %H:%M:%S"
+)
+
+
+max_intentos <- 8
+intento <- 1
+exito <- FALSE
+
+while (intento <= max_intentos && !exito) {
+  tryCatch({
+    df_cancel <- gsheet2tbl('https://docs.google.com/spreadsheets/d/1t_K6LohLH1Rdd0sSYMysaQg2ibxU34gY_9xVAqg6fHI/edit?usp=sharing')
+    exito <- TRUE
+    print("Solicitud exitosa")
+    
+  }, error = function(e) {
+    # Manejo de errores
+    print(paste("Error en el intento", intento, ":", e$message))
+    
+    # Incrementar el intento solo si se produce un error
+    intento <- intento + 1
+    
+    # Opcional: agregar un pequeño retraso entre los intentos (evitar demasiados intentos consecutivos)
+    Sys.sleep(2)  # Pausa de 2 segundos entre intentos, ajusta si es necesario
+  })
+}
+
+
+cancelaciones <- df_cancel |>
+  select(`Correo electrónico`, `Marca temporal`) |>
+  mutate(estado = 'cancelado')
+
+cancelaciones$`Marca temporal` <- as.POSIXct(
+  cancelaciones$`Marca temporal`,
+  format = "%d/%m/%Y %H:%M:%S"
+)
+
+estado_actualizado <- bind_rows(inscripciones, cancelaciones) |>
+  group_by(`Correo electrónico`) |>
+  arrange(desc(`Marca temporal`)) |>
+  slice(1) |>
+  ungroup() |>
+  filter(estado == "activo") 
+
+to <- estado_actualizado$`Correo electrónico`
 
 
 # Obtén los archivos y carpetas en el directorio
